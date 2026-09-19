@@ -380,7 +380,7 @@ export const de: Record<string, string> = {
 	'settings.hard_reset': 'Daten zurücksetzen',
 	'settings.hard_reset_desc':
 		'Löscht alle importierten Daten und Taxonomie-Änderungen und setzt die Standardkategorien und -regeln zurück.',
-	'settings.hard_reset_type': 'Gib <b>RESET</b> ein, um diese Aktion freizuschalten.',
+	'settings.hard_reset_type': 'Gib {token} ein, um diese Aktion freizuschalten.',
 	'settings.hard_reset_label': 'Bestätigung',
 	'settings.hard_reset_placeholder': 'RESET eingeben',
 	'settings.hard_reset_resetting': 'Wird zurückgesetzt...',

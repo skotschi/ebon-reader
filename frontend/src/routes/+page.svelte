@@ -73,14 +73,23 @@
 			: monthlyData.slice(-(monthlyRange === '3m' ? 3 : monthlyRange === '6m' ? 6 : 12))
 	);
 	let spendingTimelineData = $derived<MonthlySpend[]>(
-		filteredMonthlyData.map(({ month, total_spent, receipt_count, redeemed_bonus, instant_discount, basket_discount }) => ({
-			month,
-			total_spent,
-			redeemed_bonus,
-			instant_discount,
-			basket_discount,
-			receipt_count
-		}))
+		filteredMonthlyData.map(
+			({
+				month,
+				total_spent,
+				receipt_count,
+				redeemed_bonus,
+				instant_discount,
+				basket_discount
+			}) => ({
+				month,
+				total_spent,
+				redeemed_bonus,
+				instant_discount,
+				basket_discount,
+				receipt_count
+			})
+		)
 	);
 	let totalCategorySpend = $derived(filteredCategoryData.reduce((s, c) => s + c.total_spent, 0));
 </script>
@@ -127,7 +136,11 @@
 					</p>
 					{#if overview!.total_deductions > 0}
 						<p class="mt-1 text-xs text-muted-foreground">
-							↓ {formatCurrency(overview!.total_deductions)} {t('dashboard.saved_label')} · {formatCurrency(overview!.total_spent - overview!.total_deductions)} {t('dashboard.paid_label')}
+							↓ {formatCurrency(overview!.total_deductions)}
+							{t('dashboard.saved_label')} · {formatCurrency(
+								overview!.total_spent - overview!.total_deductions
+							)}
+							{t('dashboard.paid_label')}
 						</p>
 					{/if}
 				</Card.Content>
@@ -167,7 +180,9 @@
 					<Gift class="h-4 w-4 text-muted-foreground" />
 				</Card.Header>
 				<Card.Content>
-					<p class="text-2xl font-bold text-foreground">{formatCurrency(overview!.program_savings)}</p>
+					<p class="text-2xl font-bold text-foreground">
+						{formatCurrency(overview!.program_savings)}
+					</p>
 					<p class="mt-1 text-xs text-muted-foreground">{t('dashboard.from_promotions')}</p>
 					<p class="mt-1 text-xs text-muted-foreground">
 						{t('dashboard.earned_bonus_line', { amount: formatCurrency(overview!.total_bonus) })}
@@ -269,9 +284,7 @@
 						<div class="mt-4">
 							<table class="w-full table-fixed border-separate border-spacing-y-1.5 text-sm">
 								<thead>
-									<tr
-										class="text-[11px] font-medium tracking-wide text-muted-foreground uppercase"
-									>
+									<tr class="text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
 										<th class="w-[38%] border-b border-border/50 pb-1 text-left font-medium">
 											{t('dashboard.month')}
 										</th>

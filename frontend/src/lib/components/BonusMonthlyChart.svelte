@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { SvelteMap } from 'svelte/reactivity';
 	import {
 		Chart,
 		BarController,
@@ -134,8 +135,8 @@
 		const monthKeys = Array.from(
 			new Set([...data.map((row) => row.month), ...dataByShop.map((row) => row.month)])
 		).sort();
-		const storeTotals = new Map<string, number>();
-		const monthStoreMetrics = new Map<string, Map<string, StoreMonthAggregate>>();
+		const storeTotals = new SvelteMap<string, number>();
+		const monthStoreMetrics = new SvelteMap<string, Map<string, StoreMonthAggregate>>();
 
 		for (const row of dataByShop) {
 			if (row.total_spent <= 0 && row.receipt_count <= 0) continue;
@@ -143,7 +144,8 @@
 			const weight = row.total_spent > 0 ? row.total_spent : Math.max(row.receipt_count, 1);
 			storeTotals.set(row.store_name, (storeTotals.get(row.store_name) ?? 0) + row.program_savings);
 
-			const monthMap = monthStoreMetrics.get(row.month) ?? new Map<string, StoreMonthAggregate>();
+			const monthMap =
+				monthStoreMetrics.get(row.month) ?? new SvelteMap<string, StoreMonthAggregate>();
 			const aggregate = monthMap.get(row.store_name) ?? {
 				programSavings: 0,
 				rateNumerator: 0,

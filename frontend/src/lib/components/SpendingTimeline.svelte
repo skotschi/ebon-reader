@@ -8,6 +8,7 @@
 		Tooltip,
 		Filler
 	} from 'chart.js';
+	import type { ChartDataset } from 'chart.js';
 	import type { MonthlySpend } from '$lib/api';
 	import { formatMonth, formatCurrency } from '$lib/utils/format';
 	import { resolveCssVarColor, withAlpha } from '$lib/utils/chart-colors';
@@ -64,7 +65,7 @@
 		gradient.addColorStop(0.55, withAlpha(paidBar, 0.72, 'rgb(59, 130, 246)'));
 		gradient.addColorStop(1, withAlpha(paidBar, 0.42, 'rgb(59, 130, 246)'));
 
-		const datasets: any[] = [
+		const datasets: (ChartDataset<'bar'> & { tooltipLabel: string })[] = [
 			{
 				label: t('dashboard.paid_label'),
 				tooltipLabel: paidTooltipLabel,
@@ -78,19 +79,19 @@
 		];
 
 		if (hasDeductions) {
-				datasets.push({
-					label: t('dashboard.deductions'),
-					tooltipLabel: t('dashboard.deductions'),
-					data: deductions,
-					backgroundColor: deductionFill,
-					borderColor: deductionStroke,
-					borderWidth: 1,
-					borderRadius: { topLeft: 6, topRight: 6 },
-					borderSkipped: false
+			datasets.push({
+				label: t('dashboard.deductions'),
+				tooltipLabel: t('dashboard.deductions'),
+				data: deductions,
+				backgroundColor: deductionFill,
+				borderColor: deductionStroke,
+				borderWidth: 1,
+				borderRadius: { topLeft: 6, topRight: 6 },
+				borderSkipped: false
 			});
 		}
 
-		chart = new Chart(canvas, {
+		chart = new Chart<'bar'>(canvas, {
 			type: 'bar',
 			data: {
 				labels: data.map((d) => formatMonth(d.month)),
@@ -137,8 +138,7 @@
 									tooltipCtx.datasetIndex === 1
 										? deductionStroke
 										: withAlpha(paidBar, 0.8, 'rgb(59, 130, 246)'),
-								backgroundColor:
-									tooltipCtx.datasetIndex === 1 ? deductionFill : paidTooltipMarker,
+								backgroundColor: tooltipCtx.datasetIndex === 1 ? deductionFill : paidTooltipMarker,
 								borderWidth: 1,
 								borderRadius: 3
 							}),

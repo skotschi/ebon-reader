@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { errorMessage as getErrorMessage } from '$lib/utils/errors';
 	import {
 		applyTaxonomyReplace,
 		fetchTaxonomyBackupBundle,
@@ -93,8 +94,8 @@
 			) {
 				selectedTaxonomyBackupId = '';
 			}
-		} catch (e: any) {
-			error = e?.message || t('rules.err_load_backups');
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('rules.err_load_backups');
 		} finally {
 			loadingTaxonomyBackups = false;
 		}
@@ -105,8 +106,8 @@
 		try {
 			const catId = filterCategoryId !== '' ? Number(filterCategoryId) : undefined;
 			rules = await fetchRules(catId);
-		} catch (e: any) {
-			error = e?.message || t('rules.err_load');
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('rules.err_load');
 		} finally {
 			loading = false;
 		}
@@ -128,8 +129,8 @@
 			newPriority = 20;
 			showAdd = false;
 			await loadRules();
-		} catch (e: any) {
-			error = e?.message || t('rules.err_create');
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('rules.err_create');
 		}
 	}
 
@@ -157,8 +158,8 @@
 			});
 			editId = null;
 			await loadRules();
-		} catch (e: any) {
-			error = e?.message || t('rules.err_update');
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('rules.err_update');
 		}
 	}
 
@@ -167,8 +168,8 @@
 		try {
 			await deleteRule(rule.id);
 			await loadRules();
-		} catch (e: any) {
-			error = e?.message || t('rules.err_delete');
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('rules.err_delete');
 		}
 	}
 
@@ -187,8 +188,8 @@
 			deleteAllSuccessMessage = t('rules.danger_deleted', { count: String(result.deleted) });
 			deleteAllConfirmation = '';
 			await loadRules();
-		} catch (e: any) {
-			error = e?.message || t('rules.err_delete_all');
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('rules.err_delete_all');
 		} finally {
 			deletingAllRules = false;
 		}
@@ -209,8 +210,8 @@
 		reCategorizing = true;
 		try {
 			reCategorizeResult = await reCategorizeItems(overrideManualAssignments);
-		} catch (e: any) {
-			error = e?.message || t('rules.err_recat');
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('rules.err_recat');
 		} finally {
 			reCategorizing = false;
 		}
@@ -223,8 +224,8 @@
 		try {
 			reCategorizePreview = await previewReCategorizeItems(overrideManualAssignments);
 			previewOverrideManual = overrideManualAssignments;
-		} catch (e: any) {
-			error = e?.message || t('rules.err_preview_recat');
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('rules.err_preview_recat');
 		} finally {
 			previewingReCategorize = false;
 		}
@@ -304,12 +305,12 @@
 			taxonomyApplyResult = null;
 			taxonomyPreviewSignature = '';
 			taxonomyGuardMessage = t('rules.taxonomy_guard_preview');
-		} catch (e: any) {
+		} catch (e: unknown) {
 			importedTaxonomyBundle = null;
 			taxonomyPreview = null;
 			taxonomyApplyResult = null;
 			taxonomyPreviewSignature = '';
-			error = e?.message || t('rules.err_parse_json');
+			error = getErrorMessage(e) || t('rules.err_parse_json');
 		}
 	}
 
@@ -349,8 +350,8 @@
 					await writable.write(jsonContent);
 					await writable.close();
 					return;
-				} catch (e: any) {
-					if (e?.name === 'AbortError') {
+				} catch (e: unknown) {
+					if (typeof e === 'object' && e !== null && 'name' in e && e.name === 'AbortError') {
 						return;
 					}
 					throw e;
@@ -366,8 +367,8 @@
 			link.click();
 			document.body.removeChild(link);
 			URL.revokeObjectURL(url);
-		} catch (e: any) {
-			error = e?.message || t('rules.err_export');
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('rules.err_export');
 		} finally {
 			exportingTaxonomy = false;
 		}
@@ -395,8 +396,8 @@
 			taxonomyApplyResult = null;
 			taxonomyPreviewSignature = '';
 			taxonomyGuardMessage = t('rules.taxonomy_guard_preview_backup');
-		} catch (e: any) {
-			error = e?.message || t('rules.err_load_backup');
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('rules.err_load_backup');
 		} finally {
 			loadingTaxonomyBackupBundle = false;
 		}
@@ -414,8 +415,8 @@
 			taxonomyPreview = await previewTaxonomyReplace(importedTaxonomyBundle);
 			taxonomyPreviewSignature = importedTaxonomySignature;
 			taxonomyApplyResult = null;
-		} catch (e: any) {
-			error = e?.message || t('rules.err_preview_taxonomy');
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('rules.err_preview_taxonomy');
 		} finally {
 			previewingTaxonomyReplace = false;
 		}
@@ -446,8 +447,8 @@
 				loadTaxonomyBackups()
 			]);
 			categories = nextCategories;
-		} catch (e: any) {
-			error = e?.message || t('rules.err_apply_taxonomy');
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('rules.err_apply_taxonomy');
 		} finally {
 			applyingTaxonomyReplace = false;
 		}
