@@ -10,16 +10,17 @@ merge commit and merge main back into dev afterward. No auto-merge is enabled.
 The dedicated [project](https://github.com/users/skotschi/projects/2) contains issues,
 not duplicate PR cards. Status: Backlog, Ready, In progress, In review, Done.
 Priority: P1 urgent, P2 normal (default), P3 optional. Type labels: bug, feature,
-maintenance; blocked names a pending dependency. Configure native workflows to add repository
-issues and move closed issues to Done; verify they are enabled before relying on them. Agents set intermediate status and P2 on
-new issues, and restore status when reopening an issue. Native automation does not
+maintenance; blocked names a pending dependency. Configure native workflows to
+add repository issues and move closed issues to Done; verify they are enabled
+before relying on them. Agents set intermediate status and P2 on new issues,
+and restore status when reopening an issue. Native automation does not
 assign implementation authority. Declined/duplicate issues close with a reason.
 
 ## Required validation
 
 The stable check name is `CI / gate`; require it only after verifying successful
-runs and integrating the CI bootstrap PR so all subsequent PRs can produce it. PR policy requires a real same-repository issue for task PRs to
-dev; promotion PRs to main must come from this repository's dev branch. Bots follow
+runs and integrating the CI bootstrap PR so all subsequent PRs can produce it.
+PR policy requires a real same-repository issue for task PRs to dev; promotion PRs to main must come from this repository's dev branch. Bots follow
 the same issue policy. A PR author must not remove or weaken required validation.
 
 Backend: install backend/requirements-dev.txt with hashes and run
@@ -57,12 +58,11 @@ Any known baseline failure must be fixed or explicitly tracked; do not bypass it
 
 Publishing requires explicit authorization separate from promotion. Release
 validation must cover the exact tag revision and confirm it belongs to main.
-Build artifacts and checksums first. Dispatch `Release Build` with an existing `vMAJOR.MINOR.PATCH` tag (optional
-prerelease suffix) on main. Leave `publish` false for artifact-only validation.
+Build artifacts and checksums first. Dispatch `Release Build` with an existing
+`vMAJOR.MINOR.PATCH` tag (optional prerelease suffix) on main. Leave `publish` false for artifact-only validation.
 Publishing must be dispatched from main with `publish` true, only after explicit
 authorization. The workflow resolves the tag to an immutable commit for validation,
-checks it again before publication, and refuses to overwrite an existing release. Do not replace existing release
-assets implicitly. No signing/notarization credentials are introduced by this setup.
+checks it again before publication, and refuses to overwrite an existing release. No signing/notarization credentials are introduced by this setup.
 
 ## Initial activation checklist
 
