@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { errorMessage as getErrorMessage } from '$lib/utils/errors';
 	import { onDestroy } from 'svelte';
 	import * as Card from '$lib/components/ui/card';
 	import { Button } from '$lib/components/ui/button';
@@ -102,8 +103,8 @@
 			const msg = t('settings.hard_reset_success');
 			successMessage = deletedSummary ? `${msg} (${deletedSummary})` : msg;
 			confirmationInput = '';
-		} catch (e: any) {
-			errorMessage = e?.message || t('settings.hard_reset_failed');
+		} catch (e: unknown) {
+			errorMessage = getErrorMessage(e) || t('settings.hard_reset_failed');
 		} finally {
 			isResetting = false;
 		}
@@ -150,8 +151,8 @@
 			if (copied) {
 				scheduleDebugSuccessFade();
 			}
-		} catch (e: any) {
-			debugErrorMessage = e?.message || t('settings.debug_extract_failed');
+		} catch (e: unknown) {
+			debugErrorMessage = getErrorMessage(e) || t('settings.debug_extract_failed');
 		} finally {
 			isExtracting = false;
 		}
@@ -196,8 +197,8 @@
 			}
 
 			lidlErrorMessage = t('settings.lidl_clip_failed');
-		} catch (e: any) {
-			lidlErrorMessage = e?.message || t('settings.lidl_fetch_failed');
+		} catch (e: unknown) {
+			lidlErrorMessage = getErrorMessage(e) || t('settings.lidl_fetch_failed');
 		} finally {
 			isLidlCopying = false;
 		}
@@ -259,8 +260,8 @@
 				inserted: String(result.total_inserted),
 				skipped: String(result.total_skipped)
 			})} ${storeSummary}`;
-		} catch (e: any) {
-			syntheticErrorMessage = e?.message || t('settings.synthetic_generate_failed');
+		} catch (e: unknown) {
+			syntheticErrorMessage = getErrorMessage(e) || t('settings.synthetic_generate_failed');
 		} finally {
 			isGeneratingSynthetic = false;
 		}
@@ -283,8 +284,8 @@
 			syntheticSuccessMessage = deletedSummary
 				? `${t('settings.synthetic_delete_success')} (${deletedSummary})`
 				: t('settings.synthetic_delete_success');
-		} catch (e: any) {
-			syntheticErrorMessage = e?.message || t('settings.synthetic_delete_failed');
+		} catch (e: unknown) {
+			syntheticErrorMessage = getErrorMessage(e) || t('settings.synthetic_delete_failed');
 		} finally {
 			isDeletingSynthetic = false;
 		}
@@ -477,7 +478,9 @@
 			<div
 				class="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive"
 			>
-				{@html t('settings.hard_reset_type')}
+				{#each t('settings.hard_reset_type').split('{token}') as part, index (index)}
+					{#if index > 0}<b>RESET</b>{/if}{part}
+				{/each}
 			</div>
 
 			<div class="flex flex-col gap-3 sm:flex-row sm:items-end">

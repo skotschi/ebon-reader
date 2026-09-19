@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { errorMessage as getErrorMessage, errorStatus } from '$lib/utils/errors';
 	import * as Card from '$lib/components/ui/card';
 	import { Button } from '$lib/components/ui/button';
 	import { Badge } from '$lib/components/ui/badge';
@@ -303,7 +304,7 @@
 						queue.push(entry);
 					}
 				} else {
-					const errMsg = (res.reason as any)?.message || t('import.err_parse_failed');
+					const errMsg = getErrorMessage(res.reason) || t('import.err_parse_failed');
 					parseErrors.push(errMsg);
 				}
 			}
@@ -461,8 +462,8 @@
 				priority: clampPriority(draft.priority)
 			});
 			setCurrentItemRuleStatus(index, 'created');
-		} catch (e: any) {
-			if (e?.status === 409) {
+		} catch (e: unknown) {
+			if (errorStatus(e) === 409) {
 				setCurrentItemRuleStatus(index, 'exists');
 				return;
 			}
@@ -533,12 +534,12 @@
 			current.status = 'confirmed';
 			queue = [...queue];
 			moveToNext();
-		} catch (e: any) {
-			if (e?.status === 409) {
+		} catch (e: unknown) {
+			if (errorStatus(e) === 409) {
 				current.status = 'skipped';
 			} else {
 				current.status = 'error';
-				current.errorMsg = e?.message || t('import.err_failed_import');
+				current.errorMsg = getErrorMessage(e) || t('import.err_failed_import');
 			}
 			queue = [...queue];
 			moveToNext();
@@ -603,12 +604,12 @@
 						template_id: entry.preview.template_id ?? null
 					});
 					entry.status = 'confirmed';
-				} catch (e: any) {
-					if (e?.status === 409) {
+				} catch (e: unknown) {
+					if (errorStatus(e) === 409) {
 						entry.status = 'skipped';
 					} else {
 						entry.status = 'error';
-						entry.errorMsg = e?.message || t('import.err_failed_import');
+						entry.errorMsg = getErrorMessage(e) || t('import.err_failed_import');
 					}
 				}
 				queue = [...queue];
@@ -1067,7 +1068,10 @@
 		<!-- Bonus card -->
 		{#if current.preview.bonus_entries.length > 0}
 			<Card.Root>
-				{@const previewProgramSavings = computeProgramSavings(current.preview.bonus_entries, current.preview.total_bonus)}
+				{@const previewProgramSavings = computeProgramSavings(
+					current.preview.bonus_entries,
+					current.preview.total_bonus
+				)}
 				<Card.Header>
 					<div class="flex items-center gap-2">
 						<Sparkles class="h-4 w-4 text-yellow-400" />
@@ -1092,7 +1096,9 @@
 									{/if}
 									<div>
 										<p class="text-sm font-medium text-foreground">{bonus.description}</p>
-										<Badge variant="secondary" class="text-xs">{bonusTypeLabel(bonus.type, t)}</Badge>
+										<Badge variant="secondary" class="text-xs"
+											>{bonusTypeLabel(bonus.type, t)}</Badge
+										>
 									</div>
 								</div>
 								<p class="font-medium {isDeduction ? 'text-destructive' : 'text-emerald-400'}">

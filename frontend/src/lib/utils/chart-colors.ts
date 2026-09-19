@@ -34,11 +34,7 @@ export function toCanvasColor(color: string, fallback: string): string {
  * Resolve a CSS custom property to a canvas-compatible color string.
  * Supports both `var(--name)` and `hsl(var(--name))` via the `useHslVar` flag.
  */
-export function resolveCssVarColor(
-	varName: string,
-	fallback: string,
-	useHslVar = false
-): string {
+export function resolveCssVarColor(varName: string, fallback: string, useHslVar = false): string {
 	if (typeof document === 'undefined') return fallback;
 
 	const el = document.createElement('span');
