@@ -10,21 +10,22 @@ merge commit and merge main back into dev afterward. No auto-merge is enabled.
 The dedicated [project](https://github.com/users/skotschi/projects/2) contains issues,
 not duplicate PR cards. Status: Backlog, Ready, In progress, In review, Done.
 Priority: P1 urgent, P2 normal (default), P3 optional. Type labels: bug, feature,
-maintenance; blocked names a pending dependency. Native workflows add repository
-issues and move closed issues to Done. Agents set intermediate status and P2 on
+maintenance; blocked names a pending dependency. Configure native workflows to add repository
+issues and move closed issues to Done; verify they are enabled before relying on them. Agents set intermediate status and P2 on
 new issues, and restore status when reopening an issue. Native automation does not
 assign implementation authority. Declined/duplicate issues close with a reason.
 
 ## Required validation
 
-The planned stable required check is `CI / gate`; activate it only after verifying
-successful runs. PR policy requires a real same-repository issue for task PRs to
+The stable check name is `CI / gate`; require it only after verifying successful
+runs and integrating the CI bootstrap PR so all subsequent PRs can produce it. PR policy requires a real same-repository issue for task PRs to
 dev; promotion PRs to main must come from this repository's dev branch. Bots follow
 the same issue policy. A PR author must not remove or weaken required validation.
 
 Backend: install backend/requirements-dev.txt with hashes and run
 `python -m pytest backend/tests -q` from the root. Frontend: in frontend, run
-`npm ci`, `npm run check`, `npm run lint`, and `npm run build`. CI also validates
+`npm ci`, `node --test tests/errors.test.mjs`, `npm run check`, `npm run lint`,
+and `npm run build`. CI also validates
 workflow syntax and its own policy/gate tests. Desktop/build changes and promotion
 PRs build Windows NSIS and macOS ARM/Intel DMGs and smoke-test the bundled sidecar's
 HTTP startup and stdin shutdown using temporary data. Artifact builds do not publish.
@@ -56,10 +57,39 @@ Any known baseline failure must be fixed or explicitly tracked; do not bypass it
 
 Publishing requires explicit authorization separate from promotion. Release
 validation must cover the exact tag revision and confirm it belongs to main.
-Build artifacts and checksums first. Manual artifact builds never publish. The
-release workflow should publish only when explicitly dispatched with publication
-selected, after all validation/builds succeed. Do not replace existing release
+Build artifacts and checksums first. Dispatch `Release Build` with an existing `vMAJOR.MINOR.PATCH` tag (optional
+prerelease suffix) on main. Leave `publish` false for artifact-only validation.
+Publishing must be dispatched from main with `publish` true, only after explicit
+authorization. The workflow resolves the tag to an immutable commit for validation,
+checks it again before publication, and refuses to overwrite an existing release. Do not replace existing release
 assets implicitly. No signing/notarization credentials are introduced by this setup.
+
+## Initial activation checklist
+
+Live settings verified on 2026-09-19: dev is default; auto-merge is disabled;
+main/dev require PRs and resolved conversations, including administrators, and
+block force pushes/deletion. Independent approval count is zero. Workflow tokens
+are read-only by default and cannot approve PRs. Private vulnerability reporting
+is enabled. The dedicated project has the five statuses and P1/P2/P3 priorities.
+
+Remaining activation is tracked in issue #5, not implied by this document:
+
+1. Review and authorize merges of lint prerequisite PR #9, CI PR #8, and workflow
+   documentation PR #6 into dev. Use merge commits to preserve the shared lint
+   prerequisite history. The CI PR includes those prerequisite commits for testing.
+2. Confirm CI succeeds, then require the exact `CI / gate` context with strict
+   up-to-date validation on dev and main. Verify the protection API response.
+3. In [project workflows](https://github.com/users/skotschi/projects/2/workflows),
+   configure Auto-add to project for `repo:skotschi/ebon-reader is:issue is:open`;
+   set Item added to project to Backlog/P2; set Item closed to Done. Enable each
+   workflow. Keep Auto-close issue disabled: moving a card is not merge evidence.
+   Native workflow mutations are not exposed by the public GraphQL API used for
+   setup, and no browser was available to finish these UI settings.
+4. Verify a new issue is added with defaults and that closing it moves it to Done.
+   Until enabled, agents must add issues and set status/priority explicitly.
+
+Scheduled CI and Dependabot configuration become active only after their files
+reach the default branch. No promotion, tag, or release was performed during setup.
 
 ## References
 
