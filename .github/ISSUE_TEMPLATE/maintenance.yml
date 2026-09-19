@@ -1,0 +1,42 @@
+name: Maintenance task
+description: Track documentation, dependencies, automation, or cleanup.
+labels: ["maintenance"]
+body:
+  - type: markdown
+    attributes:
+      value: "Do not include personal receipts, databases, or secrets. Creating an issue does not authorize agent implementation."
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or motivation
+      description: What is wrong or needed?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Intended outcome and scope
+      description: Describe the result and what is outside this task.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: List observable conditions for completion.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation
+      description: How will the result be checked?
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies and context
+      description: Link related issues or record known constraints.
+    validations:
+      required: false
