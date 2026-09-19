@@ -1,0 +1,8 @@
+# Runtime inputs; regenerate requirements.txt with the command in docs/dependencies.md.
+fastapi>=0.115.0,<1
+uvicorn[standard]>=0.34.0,<1
+sqlmodel>=0.0.22,<1
+pdfplumber>=0.11.0,<0.12
+python-multipart>=0.0.20,<1
+pydantic>=2,<3
+pydantic-settings>=2,<3
