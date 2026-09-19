@@ -84,7 +84,9 @@ Remaining activation is tracked in issue #5, not implied by this document:
    set Item added to project to Backlog/P2; set Item closed to Done. Enable each
    workflow. Keep Auto-close issue disabled: moving a card is not merge evidence.
    Native workflow mutations are not exposed by the public GraphQL API used for
-   setup, and no browser was available to finish these UI settings.
+   setup. The browser-tab connector was unavailable; native Safari was found,
+   but the computer-use approval check rejected access, so these UI settings
+   remain unconfigured.
 4. Verify a new issue is added with defaults and that closing it moves it to Done.
    Until enabled, agents must add issues and set status/priority explicitly.
 
