@@ -42,8 +42,8 @@ This is the quickest way to use the app without setting up Python or Node.js loc
 
 Prerequisites:
 
-- Python 3.11+
-- Node.js 20+
+- Python 3.11 (the locked CI/runtime target)
+- Node.js 24 LTS
 - npm
 
 Backend (FastAPI):
@@ -55,7 +55,7 @@ python -m venv .venv
 .venv\Scripts\Activate.ps1
 # macOS/Linux:
 # source .venv/bin/activate
-pip install -r requirements.txt
+pip install --require-hashes -r requirements.txt
 uvicorn main:app --reload --host 127.0.0.1 --port 8000
 ```
 
@@ -63,11 +63,14 @@ Frontend (Svelte 5 + Vite):
 
 ```bash
 cd frontend
-npm install
+npm ci
 npm run dev
 ```
 
 By default, frontend dev runs on `http://localhost:5173` and connects to backend on `http://127.0.0.1:8000`.
+
+See [dependency maintenance](docs/dependencies.md) for locked test/build installs,
+lock regeneration, audit results and validation limitations.
 
 ## Screenshots
 
