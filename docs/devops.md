@@ -67,7 +67,7 @@ Publishing must be dispatched from main with `publish` true, only after explicit
 authorization. The workflow resolves the tag to an immutable commit for validation,
 checks it again before publication, and refuses to overwrite an existing release. No signing/notarization credentials are introduced by this setup.
 
-## Initial activation checklist
+## Verified activation
 
 Live settings verified on 2026-09-19: dev is default; auto-merge is disabled;
 main/dev require PRs and resolved conversations, including administrators, and
@@ -75,26 +75,31 @@ block force pushes/deletion. Independent approval count is zero. Workflow tokens
 are read-only by default and cannot approve PRs. Private vulnerability reporting
 is enabled. The dedicated project has the five statuses and P1/P2/P3 priorities.
 
-Remaining activation is tracked in issue #5, not implied by this document:
+Bootstrap PRs #9, #6, and #8 are integrated into dev. The
+[bootstrap CI run](https://github.com/skotschi/ebon-reader/actions/runs/35439506003)
+passed before the exact `CI / gate` check from GitHub Actions (app ID 15368) was
+required on dev and main. The protection API confirms strict up-to-date checking
+on both branches. Scheduled security scanning and Dependabot configuration are
+now on the default branch; configuration presence is not evidence of a completed
+scheduled run.
 
-1. Review and authorize merges of lint prerequisite PR #9, CI PR #8, and workflow
-   documentation PR #6 into dev. Use merge commits to preserve the shared lint
-   prerequisite history. The CI PR includes those prerequisite commits for testing.
-2. Confirm CI succeeds, then require the exact `CI / gate` context with strict
-   up-to-date validation on dev and main. Verify the protection API response.
-3. In [project workflows](https://github.com/users/skotschi/projects/2/workflows),
-   configure Auto-add to project for `repo:skotschi/ebon-reader is:issue is:open`;
-   set Item added to project to Backlog/P2; set Item closed to Done. Enable each
-   workflow. Keep Auto-close issue disabled: moving a card is not merge evidence.
-   Native workflow mutations are not exposed by the public GraphQL API used for
-   setup. The browser-tab connector was unavailable; native Safari was found,
-   but the computer-use approval check rejected access, so these UI settings
-   remain unconfigured.
-4. Verify a new issue is added with defaults and that closing it moves it to Done.
-   Until enabled, agents must add issues and set status/priority explicitly.
+The maintainer enabled the native
+[project workflows](https://github.com/users/skotschi/projects/2/workflows).
+The API confirms Auto-add to project, Item added to project, and Item closed are
+enabled; Auto-close issue remains disabled. The configured auto-add scope is
+repository `skotschi/ebon-reader` with filter `is:issue is:open`, as requested in
+the browser setup. The API exposes enabled states, not the saved filter, so the
+filter itself was not independently read back.
 
-Scheduled CI and Dependabot configuration become active only after their files
-reach the default branch. No promotion, tag, or release was performed during setup.
+[Synthetic verification issue #15](https://github.com/skotschi/ebon-reader/issues/15)
+was automatically added with Backlog status and moved automatically to Done when
+closed. No manual Status update was used. Priority was initially unset: P2 is a
+workflow convention that agents must still apply explicitly, not a verified
+native default. P2 was applied manually to the test issue after observing this.
+Agents also set intermediate statuses and restore status when reopening issues.
+
+Issue #5 records the setup and validation. No promotion, tag, or release was
+performed during setup.
 
 ## References
 
