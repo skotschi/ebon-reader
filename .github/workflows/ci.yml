@@ -131,9 +131,7 @@ jobs:
           - runner: macos-latest
             label: macos-arm64
             bundle: dmg
-          - runner: macos-15-intel
-            label: macos-intel
-            bundle: dmg
+          # macOS Intel is deferred by maintainer request; restore after #13.
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 45
     steps:
