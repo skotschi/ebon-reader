@@ -367,7 +367,7 @@ export const en: Record<string, string> = {
 	'settings.hard_reset': 'Hard Reset',
 	'settings.hard_reset_desc':
 		'This clears all imported data and taxonomy changes, then reseeds the default categories and rules.',
-	'settings.hard_reset_type': 'Type <b>RESET</b> to unlock this action.',
+	'settings.hard_reset_type': 'Type {token} to unlock this action.',
 	'settings.hard_reset_label': 'Confirmation',
 	'settings.hard_reset_placeholder': 'Type RESET',
 	'settings.hard_reset_resetting': 'Resetting...',

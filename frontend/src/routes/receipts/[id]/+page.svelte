@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+	import { errorMessage as getErrorMessage } from '$lib/utils/errors';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import {
@@ -28,19 +30,13 @@
 	let error = $state('');
 
 	let programSavings = $derived(
-		receipt
-			? computeProgramSavings(receipt.bonus_entries, receipt.total_bonus)
-			: 0
+		receipt ? computeProgramSavings(receipt.bonus_entries, receipt.total_bonus) : 0
 	);
 	let rewardBonusEntries = $derived(
-		receipt
-			? receipt.bonus_entries.filter((bonus) => !isDeductionBonusType(bonus.type))
-			: []
+		receipt ? receipt.bonus_entries.filter((bonus) => !isDeductionBonusType(bonus.type)) : []
 	);
 	let deductionBonusEntries = $derived(
-		receipt
-			? receipt.bonus_entries.filter((bonus) => isDeductionBonusType(bonus.type))
-			: []
+		receipt ? receipt.bonus_entries.filter((bonus) => isDeductionBonusType(bonus.type)) : []
 	);
 	let uncategorizedId = $derived(findUncategorizedId(categories));
 
@@ -48,8 +44,8 @@
 		const id = Number(page.params.id);
 		try {
 			[receipt, categories] = await Promise.all([fetchReceiptDetail(id), fetchCategories()]);
-		} catch (e: any) {
-			error = e?.message || t('receipts.err_load');
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('receipts.err_load');
 		} finally {
 			loading = false;
 		}
@@ -71,8 +67,8 @@
 				item.category_icon = result.category_icon;
 				receipt = { ...receipt };
 			}
-		} catch (e: any) {
-			error = e?.message || t('receipts.err_update_category');
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('receipts.err_update_category');
 		}
 	}
 
@@ -81,9 +77,9 @@
 		if (!window.confirm(t('receipts.delete_confirm'))) return;
 		try {
 			await deleteReceipt(receipt.id);
-			goto('/receipts');
-		} catch (e: any) {
-			error = e?.message || t('receipts.err_delete');
+			goto(resolve('/receipts'));
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('receipts.err_delete');
 		}
 	}
 </script>
@@ -229,7 +225,9 @@
 									{/if}
 									<div>
 										<p class="text-sm font-medium text-foreground">{bonus.description}</p>
-										<Badge variant="secondary" class="text-xs">{bonusTypeLabel(bonus.type, t)}</Badge>
+										<Badge variant="secondary" class="text-xs"
+											>{bonusTypeLabel(bonus.type, t)}</Badge
+										>
 									</div>
 								</div>
 								<p class="font-medium text-emerald-400">{formatCurrency(bonus.amount)}</p>
@@ -248,7 +246,9 @@
 									<div class="flex items-center justify-between">
 										<div>
 											<p class="text-sm font-medium text-muted-foreground">{bonus.description}</p>
-											<Badge variant="outline" class="text-xs">{bonusTypeLabel(bonus.type, t)}</Badge>
+											<Badge variant="outline" class="text-xs"
+												>{bonusTypeLabel(bonus.type, t)}</Badge
+											>
 										</div>
 										<p class="font-medium text-destructive">
 											-{formatCurrency(Math.abs(bonus.amount))}

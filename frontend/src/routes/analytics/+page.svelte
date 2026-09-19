@@ -191,12 +191,12 @@
 		try {
 			const [monthlyBonus, monthlyBonusByShop, storeBonus, categoryMonthly, stores, top] =
 				await Promise.all([
-				fetchMonthlyBonus(),
-				fetchMonthlyBonusByShop(),
-				fetchStoreBonusBreakdown(),
-				fetchCategoryMonthly(),
-				fetchStoreBreakdown(),
-				fetchTopItems(120)
+					fetchMonthlyBonus(),
+					fetchMonthlyBonusByShop(),
+					fetchStoreBonusBreakdown(),
+					fetchCategoryMonthly(),
+					fetchStoreBreakdown(),
+					fetchTopItems(120)
 				]);
 
 			monthlyBonusData = monthlyBonus;
@@ -260,17 +260,27 @@
 												>
 													#{index + 1}
 												</span>
-												<p class="truncate text-sm font-medium text-foreground">{store.store_name}</p>
+												<p class="truncate text-sm font-medium text-foreground">
+													{store.store_name}
+												</p>
 											</div>
 											<div class="mt-1 flex flex-wrap gap-1.5 text-[11px]">
-												<span class="rounded-full border border-border bg-card px-2 py-0.5 text-muted-foreground">
+												<span
+													class="rounded-full border border-border bg-card px-2 py-0.5 text-muted-foreground"
+												>
 													{t('analytics.store_receipts', { count: store.receipt_count })}
 												</span>
-												<span class="rounded-full border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-sky-300">
-													{t('analytics.store_avg_basket')} {formatCurrency(store.avg_basket)}
+												<span
+													class="rounded-full border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-sky-300"
+												>
+													{t('analytics.store_avg_basket')}
+													{formatCurrency(store.avg_basket)}
 												</span>
-												<span class="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-amber-300">
-													{t('analytics.store_share')} {formatPercent(store.share_percent)}
+												<span
+													class="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-amber-300"
+												>
+													{t('analytics.store_share')}
+													{formatPercent(store.share_percent)}
 												</span>
 											</div>
 										</div>
@@ -349,11 +359,21 @@
 							<table class="w-full min-w-[34rem] text-sm">
 								<thead>
 									<tr class="border-b border-border text-muted-foreground">
-										<th class="px-2 py-2 text-left font-medium">{t('analytics.store_bonus_store')}</th>
-										<th class="px-2 py-2 text-right font-medium">{t('analytics.store_bonus_savings')}</th>
-										<th class="px-2 py-2 text-right font-medium">{t('analytics.store_bonus_rate')}</th>
-										<th class="px-2 py-2 text-right font-medium">{t('analytics.store_bonus_spent')}</th>
-										<th class="px-2 py-2 text-right font-medium">{t('analytics.store_bonus_receipts')}</th>
+										<th class="px-2 py-2 text-left font-medium"
+											>{t('analytics.store_bonus_store')}</th
+										>
+										<th class="px-2 py-2 text-right font-medium"
+											>{t('analytics.store_bonus_savings')}</th
+										>
+										<th class="px-2 py-2 text-right font-medium"
+											>{t('analytics.store_bonus_rate')}</th
+										>
+										<th class="px-2 py-2 text-right font-medium"
+											>{t('analytics.store_bonus_spent')}</th
+										>
+										<th class="px-2 py-2 text-right font-medium"
+											>{t('analytics.store_bonus_receipts')}</th
+										>
 									</tr>
 								</thead>
 								<tbody>

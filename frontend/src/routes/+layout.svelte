@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import {
@@ -25,7 +26,7 @@
 		{ href: '/categories', labelKey: 'nav.categories', icon: Tags },
 		{ href: '/rules', labelKey: 'nav.rules', icon: ListFilter },
 		{ href: '/settings', labelKey: 'nav.settings', icon: Settings }
-	];
+	] as const;
 </script>
 
 <svelte:head>
@@ -53,7 +54,7 @@
 			{#each navItems as item (item.href)}
 				<li>
 					<a
-						href={item.href}
+						href={resolve(item.href)}
 						class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 					>
 						<item.icon class="h-4 w-4" />

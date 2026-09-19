@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+	import { errorMessage as getErrorMessage } from '$lib/utils/errors';
 	import {
 		fetchCategories,
 		createCategory,
@@ -39,8 +41,8 @@
 		loading = true;
 		try {
 			categories = await fetchCategories();
-		} catch (e: any) {
-			error = e?.message || t('categories.err_load');
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('categories.err_load');
 		} finally {
 			loading = false;
 		}
@@ -56,8 +58,8 @@
 			newColor = '#6b7280';
 			showAdd = false;
 			await loadCategories();
-		} catch (e: any) {
-			error = e?.message || t('categories.err_create');
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('categories.err_create');
 		}
 	}
 
@@ -83,8 +85,8 @@
 			});
 			editId = null;
 			await loadCategories();
-		} catch (e: any) {
-			error = e?.message || t('categories.err_update');
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('categories.err_update');
 		}
 	}
 
@@ -93,8 +95,8 @@
 		try {
 			await deleteCategory(cat.id);
 			await loadCategories();
-		} catch (e: any) {
-			error = e?.message || t('categories.err_delete');
+		} catch (e: unknown) {
+			error = getErrorMessage(e) || t('categories.err_delete');
 		}
 	}
 </script>
@@ -123,7 +125,7 @@
 		class="rounded-md border border-border/60 bg-muted/20 px-3 py-2 text-sm text-muted-foreground"
 	>
 		{t('categories.taxonomy_hint')}
-		<a class="font-medium text-foreground underline" href="/rules"
+		<a class="font-medium text-foreground underline" href={resolve('/rules')}
 			>{t('categories.taxonomy_link')}</a
 		>.
 	</div>

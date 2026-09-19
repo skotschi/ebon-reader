@@ -35,7 +35,6 @@
 		}
 	}
 
-
 	function buildChart() {
 		destroyChart();
 		if (!canvas || data.length === 0) return;

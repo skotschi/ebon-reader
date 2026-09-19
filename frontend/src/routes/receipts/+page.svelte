@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { fetchReceipts, type Receipt } from '$lib/api';
 	import { onMount } from 'svelte';
 	import * as Card from '$lib/components/ui/card';
@@ -58,7 +59,7 @@
 	{:else}
 		<div class="space-y-2">
 			{#each receipts as receipt (receipt.id)}
-				<a href="/receipts/{receipt.id}" class="block">
+				<a href={resolve('/receipts/[id]', { id: String(receipt.id) })} class="block">
 					<Card.Root class="transition-colors hover:bg-accent/20">
 						<Card.Content class="flex items-center justify-between py-4">
 							<div class="flex items-center gap-4">
