@@ -109,3 +109,8 @@ lock regeneration, audit results and validation limitations.
 ## License
 
 This project is intended to be licensed under Apache-2.0.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the issue-driven workflow and
+[AGENTS.md](AGENTS.md) for repository and agent rules.
