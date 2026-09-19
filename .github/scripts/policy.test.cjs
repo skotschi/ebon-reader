@@ -27,3 +27,21 @@ test('gate rejects missing, skipped, failed and cancelled required jobs', () => 
   gate({ ...result, desktop: { result: 'skipped' } }, false);
   assert.throws(() => gate(result, false));
 });
+
+// Exercise the actual entrypoint, including Node module resolution, outside the
+// repository directory (as with GitHub Actions' temporary runner scripts).
+test('gate entrypoint resolves its module and propagates failures', () => {
+  const { spawnSync } = require('node:child_process');
+  const { tmpdir } = require('node:os');
+  const { join } = require('node:path');
+  const results = Object.fromEntries(['policy', 'validation', 'backend', 'frontend', 'security', 'desktop'].map(k => [k, { result: 'success' }]));
+  const run = (values) => spawnSync(process.execPath, [join(__dirname, 'gate.cjs')], {
+    cwd: tmpdir(),
+    env: { ...process.env, RESULTS: JSON.stringify(values), DESKTOP: 'true' },
+    encoding: 'utf8'
+  });
+  assert.equal(run(results).status, 0);
+  const failed = run({ ...results, frontend: { result: 'failure' } });
+  assert.notEqual(failed.status, 0);
+  assert.match(failed.stderr, /frontend did not succeed/);
+});

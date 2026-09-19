@@ -179,10 +179,7 @@ jobs:
         with:
           ref: ${{ inputs.revision || github.sha }}
           persist-credentials: false
-      - run: |
-          const { gate } = require('./.github/scripts/policy.cjs');
-          gate(JSON.parse(process.env.RESULTS), process.env.DESKTOP === 'true');
-        shell: node {0}
+      - run: node .github/scripts/gate.cjs
         env:
           RESULTS: ${{ toJSON(needs) }}
           DESKTOP: ${{ needs.policy.outputs.desktop }}
