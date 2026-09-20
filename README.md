@@ -30,13 +30,15 @@ Retailers expose receipts differently, so the import flow depends on what their 
 
 ## Installation / Getting Started
 
-### 1) Use the prebuilt Windows app (`.exe`)
+### 1) Use the macOS ARM64 app (`.dmg`)
 
 1. Open the repository's **Releases** page on GitHub.
-2. Download the latest Windows `.exe` build.
-3. Run the executable.
+2. Download an ARM64 (`_aarch64.dmg`) build when available.
+3. Open the DMG and drag eBon Reader into Applications.
 
-This is the quickest way to use the app without setting up Python or Node.js locally.
+macOS ARM64 (Apple Silicon) is the sole supported desktop build and release
+target. Windows, Intel macOS, and Linux desktop packages are not supported.
+Older release assets may target other platforms.
 
 ### 2) Run manually (Python backend + Svelte frontend)
 
@@ -51,10 +53,7 @@ Backend (FastAPI):
 ```bash
 cd backend
 python -m venv .venv
-# Windows PowerShell:
-.venv\Scripts\Activate.ps1
-# macOS/Linux:
-# source .venv/bin/activate
+source .venv/bin/activate
 pip install --require-hashes -r requirements.txt
 uvicorn main:app --reload --host 127.0.0.1 --port 8000
 ```

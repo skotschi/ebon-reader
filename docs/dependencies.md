@@ -26,8 +26,9 @@ uv pip compile backend/requirements-dev.in --constraint backend/requirements.txt
 Add `--upgrade` when intentionally refreshing existing pins. Runtime constraints
 keep direct dependencies within their current major versions, with pdfplumber
 restricted to 0.11. The development lock constrains shared packages to the runtime
-lock and includes pytest, HTTPX and PyInstaller. Platform-specific installation
-and packaging still need testing on each release target. These locks make Python
+lock and includes pytest, HTTPX and PyInstaller. Desktop packaging is supported
+only on macOS ARM64. Portable lock markers do not
+imply desktop support for other platforms. These locks make Python
 package selection reproducible; they do not promise byte-identical executables
 or pin OS toolchains and CI audit tools.
 
@@ -141,9 +142,9 @@ reviewed. Do not merge through failing required checks.
   compatibility and configuration changes. Registry marks ESLint 9.39.5 as
   unsupported, so this follow-up matters even though its audit is clear.
 - Resolve the existing formatting/source lint failures and generated-output
-  exclusion in a focused cleanup; validate the other desktop targets before
-  release. Monitor cookie and the seven Rust warnings for compatible upstream
-  fixes.
+  exclusion in a focused cleanup (subsequently completed in #7). Desktop release
+  validation now targets only macOS ARM64 (#14). Monitor cookie and the seven
+  Rust warnings for compatible upstream fixes.
 
 CI uses [Node 24 LTS](https://nodejs.org/en/about/previous-releases) instead of
 Node 20. The existing workflow only runs for releases/manual dispatch; this
