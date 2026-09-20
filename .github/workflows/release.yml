@@ -69,9 +69,8 @@ jobs:
       # No checkout or execution of repository code in this write-enabled job.
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
-          pattern: desktop-*
+          name: desktop-macos-arm64
           path: dist
-          merge-multiple: true
       - name: Publish validated artifacts
         env:
           GH_TOKEN: ${{ github.token }}
@@ -85,10 +84,21 @@ jobs:
           SHA=$(gh api "repos/$GH_REPO/commits/$TAG" --jq .sha)
           [[ "$SHA" == "$EXPECTED_SHA" ]]
           cd dist
-          for manifest in SHA256SUMS-*.txt; do sha256sum --check "$manifest"; done
+          # Fail closed if the artifact contains anything but one ARM64 DMG
+          # and its single-entry checksum manifest (including hidden files).
+          shopt -s nullglob dotglob
+          files=(*)
+          installers=(*_aarch64.dmg)
+          [[ ${#files[@]} == 2 ]] || exit 1
+          [[ ${#installers[@]} == 1 ]] || exit 1
+          [[ -f "${installers[0]}" && ! -L "${installers[0]}" ]]
+          [[ -f SHA256SUMS-macos-arm64.txt && ! -L SHA256SUMS-macos-arm64.txt ]]
+          [[ $(wc -l < SHA256SUMS-macos-arm64.txt) == 1 ]]
+          sha256sum -- "${installers[0]}" > "$RUNNER_TEMP/expected-checksums.txt"
+          cmp SHA256SUMS-macos-arm64.txt "$RUNNER_TEMP/expected-checksums.txt"
           if gh release view "$TAG" >/dev/null 2>&1; then
             echo 'Release already exists; refusing to replace it.' >&2
             exit 1
           fi
-          gh release create "$TAG" --verify-tag --generate-notes --draft ./*
+          gh release create "$TAG" --verify-tag --generate-notes --draft "${installers[0]}" SHA256SUMS-macos-arm64.txt
           gh release edit "$TAG" --draft=false

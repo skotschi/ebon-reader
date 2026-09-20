@@ -28,11 +28,20 @@ Backend: install backend/requirements-dev.txt with hashes and run
 `npm ci`, `node --test tests/errors.test.mjs`, `npm run check`, `npm run lint`,
 and `npm run build`. CI also validates
 workflow syntax and its own policy/gate tests. Desktop/build changes and promotion
-PRs build Windows NSIS and macOS ARM DMGs and smoke-test the bundled sidecar's
-HTTP startup and stdin shutdown using temporary data. Artifact builds do not publish.
-macOS Intel CI and release packaging are temporarily omitted at the maintainer's
-request; issue #13 tracks its bundled OpenSSL startup failure and restoration.
-Intel is deferred, not validated. Windows and macOS ARM remain required.
+PRs build only macOS ARM64 DMGs and smoke-test the bundled sidecar's
+HTTP startup and stdin shutdown using temporary data. macOS ARM64 (Apple Silicon)
+is the sole supported desktop build and release target. Windows, Intel macOS,
+and Linux desktop packages are unsupported; there is no Intel restoration plan.
+General backend, frontend, workflow, and security checks remain on Ubuntu.
+Artifact builds do not publish.
+
+On an Apple Silicon Mac with the locked backend development environment active,
+run `npm ci` and `npm run tauri:build -- --bundles dmg` in `frontend`, then run
+`python .github/scripts/smoke-sidecar.py` and
+`python .github/scripts/collect-artifacts.py` from the repository root. The
+collector requires an empty `dist` directory and exactly one `_aarch64.dmg`.
+The release job downloads only `desktop-macos-arm64` and rejects extra files or
+an incorrect checksum manifest before publishing.
 
 Security scans cover Python, Cargo, npm (including dev dependencies), and secrets
 on PRs and weekly. npm high/critical findings and any Python/Cargo advisory block

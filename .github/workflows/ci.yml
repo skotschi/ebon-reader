@@ -72,6 +72,7 @@ jobs:
         with:
           node-version: '24'
       - run: node --test .github/scripts/policy.test.cjs
+      - run: python -m unittest discover -s .github/scripts -p "test_*.py"
       - run: python .github/scripts/install-tool.py actionlint "$RUNNER_TEMP/tools"
       - run: '"$RUNNER_TEMP/tools/actionlint" -color'
   backend:
@@ -118,21 +119,10 @@ jobs:
     with:
       revision: ${{ inputs.revision || github.sha }}
   desktop:
-    name: Desktop (${{ matrix.label }})
+    name: Desktop (macos-arm64)
     needs: policy
     if: needs.policy.outputs.desktop == 'true'
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - runner: windows-latest
-            label: windows
-            bundle: nsis
-          - runner: macos-latest
-            label: macos-arm64
-            bundle: dmg
-          # macOS Intel is deferred by maintainer request; restore after #13.
-    runs-on: ${{ matrix.runner }}
+    runs-on: macos-15
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -156,15 +146,13 @@ jobs:
         run: python .github/scripts/release-version.py
         env:
           RELEASE_TAG: ${{ inputs.release-tag }}
-      - run: npm run tauri:build -- --bundles ${{ matrix.bundle }}
+      - run: npm run tauri:build -- --bundles dmg
         working-directory: frontend
       - run: python .github/scripts/smoke-sidecar.py
       - run: python .github/scripts/collect-artifacts.py
-        env:
-          ARTIFACT_LABEL: ${{ matrix.label }}
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: desktop-${{ matrix.label }}
+          name: desktop-macos-arm64
           path: dist/*
           if-no-files-found: error
           retention-days: 14

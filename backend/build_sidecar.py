@@ -12,33 +12,21 @@ FRONTEND_BIN_DIR = BACKEND_DIR.parent / "frontend" / "src-tauri" / "binaries"
 ENTRYPOINT = BACKEND_DIR / "sidecar_main.py"
 PYINSTALLER_NAME = "ebon_backend"
 
-# Tauri expects the sidecar binary to be named:
-#   <externalBin>-<rust-target-triple>[.exe]
-# This map covers all CI targets.
-_TARGET_MAP: dict[tuple[str, str], tuple[str, str]] = {
-    # (system, machine) -> (target_triple, extension)
-    ("Windows", "AMD64"):   ("x86_64-pc-windows-msvc",    ".exe"),
-    ("Windows", "x86_64"):  ("x86_64-pc-windows-msvc",    ".exe"),
-    ("Darwin",  "arm64"):   ("aarch64-apple-darwin",       ""),
-    ("Darwin",  "x86_64"):  ("x86_64-apple-darwin",        ""),
-    ("Linux",   "x86_64"):  ("x86_64-unknown-linux-gnu",   ""),
-}
-
-
+# PyInstaller packages the host interpreter; cross-compiling the Rust app alone
+# cannot produce a compatible backend. Require a native Apple Silicon build.
 def _resolve_target() -> tuple[str, str]:
-    """Return (target_triple, file_extension) for the current platform."""
     system = platform.system()
     machine = platform.machine()
-    key = (system, machine)
-    if key not in _TARGET_MAP:
+    if (system, machine) != ("Darwin", "arm64"):
         raise RuntimeError(
-            f"Unsupported platform: {system}/{machine}. "
-            f"Supported: {list(_TARGET_MAP.keys())}"
+            f"Unsupported desktop build platform: {system}/{machine}. "
+            "Only macOS ARM64 (Apple Silicon) is supported."
         )
-    return _TARGET_MAP[key]
+    return "aarch64-apple-darwin", ""
 
 
 def build_sidecar() -> int:
+    target_triple, ext = _resolve_target()
     if not ENTRYPOINT.exists():
         print(f"ERROR: Missing sidecar entrypoint: {ENTRYPOINT}")
         return 1
@@ -53,7 +41,6 @@ def build_sidecar() -> int:
         elif stale_path.exists():
             stale_path.unlink()
 
-    target_triple, ext = _resolve_target()
     print(f"Building backend sidecar with PyInstaller for {target_triple}...")
 
     result = subprocess.run(

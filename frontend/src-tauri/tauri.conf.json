@@ -22,7 +22,7 @@
 	},
 	"bundle": {
 		"active": true,
-		"targets": "all",
+		"targets": ["dmg"],
 		"externalBin": ["binaries/ebon_backend"],
 		"icon": [
 			"icons/32x32.png",
